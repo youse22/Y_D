@@ -21,8 +21,8 @@ session_start();
 $projects = [
   ['url' => 'https://haitirh.com'],
   // ['url' => 'https://exemple.com', 'title' => 'Mon projet', 'desc' => 'Courte description', 'tags' => ['WordPress']],
-  ['url' => 'http://localhost:8080/Y_D/POS'],
-  ['url' => 'http://localhost:8080/Y_D/Gmateriaux'],
+  ['url' => 'https://youse22.github.io/POS/'],
+  ['url' => 'https://youse22.github.io/Gmateriaux/'],
   ['url' => 'https://newborntechnologie.com/Newborn_website/NewBorn/structure/'],
   ['url' => 'https://ayitikomes.com'],
   ['url' => 'https://CASALATINA'],
