@@ -1,0 +1,617 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#171717">
+
+  <title>Projets — Yousenie Dorsainvil</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,600;1,400;1,600&family=Jost:wght@400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/yd.css">
+
+  <style>
+    /* Force le masquage des éléments cachés */
+    [hidden] {
+      display: none !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="bg-glow" aria-hidden="true"></div>
+  <div class="bg-pattern" aria-hidden="true"></div>
+
+  <div class="bg-mark" aria-hidden="true">
+    <svg viewBox="0 0 140 80">
+      <path d="M0 0L30 45L60 0M30 45V80"/>
+      <path class="accent" d="M80 0V80H100A40 40 0 0 0 100 0Z"/>
+    </svg>
+  </div>
+
+  <!-- NAVIGATION -->
+  <header class="nav">
+    <a href="index.html" class="logo" aria-label="Retour à l'accueil">
+      <svg viewBox="0 0 140 80" aria-hidden="true">
+        <path d="M4 4L32 45L60 4M32 45V76M84 4V76H100A36 36 0 0 0 100 4Z"/>
+      </svg>
+      <span>Yousenie Dorsainvil</span>
+    </a>
+
+    <ul>
+      <li>
+        <a class="link" href="index.html">Accueil</a>
+      </li>
+
+      <li>
+        <button class="link lock" id="logoutBtn" type="button" hidden>
+          Verrouiller
+        </button>
+      </li>
+    </ul>
+  </header>
+
+  <!-- CONNEXION -->
+  <main class="gate" id="loginSection">
+    <div class="gate-box">
+
+      <svg viewBox="0 0 24 24"
+           width="36"
+           height="36"
+           fill="none"
+           stroke="#D9A5A6"
+           stroke-width="1.6"
+           aria-hidden="true">
+        <rect x="4" y="10" width="16" height="11" rx="2"/>
+        <path d="M8 10V7a4 4 0 0 1 8 0v3"/>
+      </svg>
+
+      <h1>Projets privés</h1>
+
+      <p>
+        Entrez le mot de passe pour voir mes réalisations.
+      </p>
+
+      <div class="err"
+           id="errorMessage"
+           role="alert"
+           aria-live="polite"
+           hidden>
+      </div>
+
+      <form id="loginForm">
+
+        <input
+          type="password"
+          id="password"
+          name="password"
+          placeholder="Mot de passe"
+          required
+          autofocus
+          autocomplete="current-password"
+        >
+
+        <button class="btn solid" type="submit" id="loginBtn">
+          Déverrouiller
+        </button>
+
+      </form>
+
+      <a class="back" href="index.html">
+        Retour à l'accueil
+      </a>
+
+    </div>
+  </main>
+
+  <!-- PROJETS -->
+  <main class="wrap top" id="projectsSection" hidden>
+    <div class="inner">
+
+      <h2>Projets</h2>
+
+      <p class="lead">
+        Cliquez sur un projet pour ouvrir le site.
+      </p>
+
+      <div class="grid" id="projectsGrid"></div>
+
+    </div>
+  </main>
+
+  <script>
+    'use strict';
+
+    /* ==========================================
+       CONFIGURATION DE LA CONNEXION
+    ========================================== */
+
+    // Hash SHA-256 du nouveau mot de passe
+    const PASSWORD_HASH =
+      'dafcc57b3abfd4998db201c6cfeb9262f9bb0fc72ced1e47fcba85413f95b608';
+
+    const MAX_ATTEMPTS = 5;
+
+    // Durée de session : 30 minutes
+    const SESSION_DURATION = 30 * 60 * 1000;
+
+    const AUTH_KEY = 'yd_projects_auth';
+    const EXPIRATION_KEY = 'yd_projects_expiration';
+
+
+    /* ==========================================
+       LISTE DES PROJETS
+    ========================================== */
+
+    const projects = [
+
+      {
+        url: 'https://haitirh.com',
+        title: 'Haiti RH',
+        desc: 'Plateforme dédiée aux ressources humaines et au recrutement.',
+        tags: ['Ressources humaines', 'Web', 'Recrutement']
+      },
+
+      {
+        url: 'https://youse22.github.io/POS/',
+        title: 'GMATÉRIAUX POS',
+        desc: 'Système de point de vente pour dépôts et quincailleries : ventes, clients, paiements et livraisons.',
+        tags: ['POS', 'Gestion commerciale', 'Web']
+      },
+
+      {
+        url: 'https://youse22.github.io/Gmateriaux/',
+        title: 'GMATÉRIAUX',
+        desc: 'Plateforme de présentation d’un logiciel de gestion pour entreprises de matériaux de construction.',
+        tags: ['Web Design', 'Responsive', 'Gestion']
+      },
+
+      {
+        url: 'https://newborntechnologie.com/Newborn_website/NewBorn/structure/',
+        title: 'Newborn Technologie',
+        desc: 'Site web professionnel présentant les services et activités de l’entreprise.',
+        tags: ['Technologie', 'Web Design', 'Développement web']
+      },
+
+      {
+        url: 'https://ayitikomes.com',
+        title: 'Ayiti Komès',
+        desc: 'Plateforme web dédiée au commerce et aux activités économiques.',
+        tags: ['E-commerce', 'Business', 'Web']
+      },
+
+      {
+        url: '',
+        title: 'Casa Latina',
+        desc: 'Projet web de présentation d’entreprise.',
+        tags: ['Site vitrine', 'Web Design']
+      }
+
+    ];
+
+
+    /* ==========================================
+       ÉLÉMENTS HTML
+    ========================================== */
+
+    const loginSection = document.getElementById('loginSection');
+    const projectsSection = document.getElementById('projectsSection');
+
+    const loginForm = document.getElementById('loginForm');
+    const passwordInput = document.getElementById('password');
+
+    const errorMessage = document.getElementById('errorMessage');
+    const loginBtn = document.getElementById('loginBtn');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    const projectsGrid = document.getElementById('projectsGrid');
+
+    let attempts = 0;
+    let expirationTimer = null;
+
+
+    /* ==========================================
+       AFFICHAGE DES SECTIONS
+    ========================================== */
+
+    function showProjects() {
+
+      loginSection.hidden = true;
+      projectsSection.hidden = false;
+
+      logoutBtn.hidden = false;
+
+    }
+
+
+    function showLogin() {
+
+      projectsSection.hidden = true;
+      loginSection.hidden = false;
+
+      logoutBtn.hidden = true;
+
+      passwordInput.value = '';
+
+    }
+
+
+    function showError(message) {
+
+      errorMessage.textContent = message;
+      errorMessage.hidden = false;
+
+    }
+
+
+    /* ==========================================
+       PROTECTION DU CONTENU HTML
+    ========================================== */
+
+    function escapeHTML(value) {
+
+      return String(value).replace(/[&<>"']/g, function(char) {
+
+        return {
+          '&': '&amp;',
+          '<': '&lt;',
+          '>': '&gt;',
+          '"': '&quot;',
+          "'": '&#039;'
+        }[char];
+
+      });
+
+    }
+
+
+    /* ==========================================
+       GESTION DES APERÇUS
+    ========================================== */
+
+    function getTitle(project) {
+
+      if (project.title) {
+        return project.title;
+      }
+
+      if (project.url) {
+
+        try {
+
+          return new URL(project.url)
+            .hostname
+            .replace(/^www\./, '');
+
+        } catch (error) {
+
+          return 'Projet';
+
+        }
+
+      }
+
+      return 'Projet';
+
+    }
+
+
+    function getImage(project) {
+
+      if (project.img) {
+        return project.img;
+      }
+
+      if (project.url) {
+
+        return 'https://s.wordpress.com/mshots/v1/'
+          + encodeURIComponent(project.url)
+          + '?w=1200&h=750';
+
+      }
+
+      return '';
+
+    }
+
+
+    /* ==========================================
+       GÉNÉRATION DES CARTES DE PROJETS
+    ========================================== */
+
+    function renderProjects() {
+
+      projectsGrid.innerHTML = projects.map(function(project) {
+
+        const title = escapeHTML(getTitle(project));
+
+        const description = project.desc
+          ? `<p>${escapeHTML(project.desc)}</p>`
+          : '';
+
+        const image = getImage(project);
+
+        const imageHTML = image
+          ? `<img src="${escapeHTML(image)}"
+                  alt="Aperçu de ${title}"
+                  loading="lazy">`
+          : '';
+
+        const tags = project.tags && project.tags.length
+          ? `<div class="tags">
+              ${project.tags.map(function(tag) {
+                return `<span>${escapeHTML(tag)}</span>`;
+              }).join('')}
+             </div>`
+          : '';
+
+        const visit = project.url
+          ? '<span class="visit">Visiter le site →</span>'
+          : '';
+
+        const content = `
+          <div class="shot">
+            ${imageHTML}
+          </div>
+
+          <div class="body">
+            <h3>${title}</h3>
+            ${description}
+            ${tags}
+            ${visit}
+          </div>
+        `;
+
+        if (project.url) {
+
+          return `
+            <a class="card"
+               href="${escapeHTML(project.url)}"
+               target="_blank"
+               rel="noopener noreferrer">
+              ${content}
+            </a>
+          `;
+
+        }
+
+        return `
+          <div class="card">
+            ${content}
+          </div>
+        `;
+
+      }).join('');
+
+    }
+
+
+    /* ==========================================
+       GESTION DE LA SESSION
+    ========================================== */
+
+    function isAuthenticated() {
+
+      const expiration = Number(
+        sessionStorage.getItem(EXPIRATION_KEY)
+      );
+
+      return sessionStorage.getItem(AUTH_KEY) === 'true'
+        && Number.isFinite(expiration)
+        && expiration > Date.now();
+
+    }
+
+
+    function createSession() {
+
+      const expiration = Date.now() + SESSION_DURATION;
+
+      sessionStorage.setItem(AUTH_KEY, 'true');
+
+      sessionStorage.setItem(
+        EXPIRATION_KEY,
+        String(expiration)
+      );
+
+      scheduleExpiration(expiration);
+
+    }
+
+
+    function scheduleExpiration(expiration) {
+
+      if (expirationTimer) {
+
+        clearTimeout(expirationTimer);
+
+      }
+
+      const remaining = expiration - Date.now();
+
+      if (remaining <= 0) {
+
+        logout();
+        return;
+
+      }
+
+      expirationTimer = setTimeout(logout, remaining);
+
+    }
+
+
+    /* ==========================================
+       DÉCONNEXION
+    ========================================== */
+
+    function logout() {
+
+      if (expirationTimer) {
+
+        clearTimeout(expirationTimer);
+        expirationTimer = null;
+
+      }
+
+      sessionStorage.removeItem(AUTH_KEY);
+      sessionStorage.removeItem(EXPIRATION_KEY);
+
+      projectsGrid.innerHTML = '';
+
+      showLogin();
+
+    }
+
+
+    /* ==========================================
+       VÉRIFICATION DU MOT DE PASSE
+    ========================================== */
+
+    async function verifyPassword(password) {
+
+      if (!window.crypto || !window.crypto.subtle) {
+
+        throw new Error(
+          'Web Crypto indisponible : utilisez HTTPS.'
+        );
+
+      }
+
+      const encodedPassword = new TextEncoder().encode(password);
+
+      const digest = await window.crypto.subtle.digest(
+        'SHA-256',
+        encodedPassword
+      );
+
+      const hashArray = Array.from(new Uint8Array(digest));
+
+      const passwordHash = hashArray
+        .map(byte => byte.toString(16).padStart(2, '0'))
+        .join('');
+
+      return passwordHash === PASSWORD_HASH;
+
+    }
+
+
+    /* ==========================================
+       FORMULAIRE DE CONNEXION
+    ========================================== */
+
+    loginForm.addEventListener('submit', async function(event) {
+
+      event.preventDefault();
+
+      errorMessage.hidden = true;
+
+      if (attempts >= MAX_ATTEMPTS) {
+
+        showError(
+          'Trop de tentatives. Rechargez la page pour réessayer.'
+        );
+
+        return;
+
+      }
+
+      const password = passwordInput.value;
+
+      if (!password) {
+
+        showError('Veuillez saisir votre mot de passe.');
+
+        return;
+
+      }
+
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Vérification...';
+
+      try {
+
+        const valid = await verifyPassword(password);
+
+        if (!valid) {
+
+          attempts++;
+
+          showError('Mot de passe incorrect.');
+
+          passwordInput.value = '';
+          passwordInput.focus();
+
+          return;
+
+        }
+
+        // Connexion réussie
+        attempts = 0;
+
+        createSession();
+
+        renderProjects();
+
+        showProjects();
+
+      } catch (error) {
+
+        console.error(
+          'Erreur de vérification :',
+          error
+        );
+
+        showError(
+          'Une erreur est survenue pendant la vérification du mot de passe.'
+        );
+
+      } finally {
+
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'Déverrouiller';
+
+      }
+
+    });
+
+
+    /* ==========================================
+       BOUTON VERROUILLER
+    ========================================== */
+
+    logoutBtn.addEventListener('click', logout);
+
+
+    /* ==========================================
+       INITIALISATION
+    ========================================== */
+
+    if (isAuthenticated()) {
+
+      const expiration = Number(
+        sessionStorage.getItem(EXPIRATION_KEY)
+      );
+
+      renderProjects();
+
+      showProjects();
+
+      scheduleExpiration(expiration);
+
+    } else {
+
+      logout();
+
+    }
+
+  </script>
+
+</body>
+</html>
