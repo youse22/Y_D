@@ -20,6 +20,54 @@
     [hidden] {
       display: none !important;
     }
+
+/* Bouton Verrouiller */
+button.link.lock {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    min-height: 38px;
+
+    background: transparent;
+    color: #e5e1da;
+
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 30px;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+/* Survol */
+button.link.lock:hover {
+    background: rgba(237, 28, 36, 0.12);
+    color: #ff4b50;
+    border-color: #ed1c24;
+    transform: translateY(-1px);
+}
+
+/* Clic */
+button.link.lock:active {
+    transform: scale(0.97);
+}
+
+/* Focus clavier */
+button.link.lock:focus-visible {
+    outline: 2px solid #ed1c24;
+    outline-offset: 3px;
+}
+
+/* Respecter l'attribut hidden */
+button.link.lock[hidden] {
+    display: none !important;
+}
+
   </style>
 </head>
 
